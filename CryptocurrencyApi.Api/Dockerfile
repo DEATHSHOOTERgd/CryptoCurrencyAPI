@@ -7,16 +7,19 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["CryptocurrencyApi.API/CryptocurrencyApi.API.csproj", "CryptocurrencyApi.API/"]
-RUN dotnet restore "CryptocurrencyApi.API/CryptocurrencyApi.API.csproj"
+COPY ["CryptocurrencyApi.Api/CryptocurrencyApi.Api.csproj", "CryptocurrencyApi.Api/"]
+COPY ["CryptocurrencyApi.Application/CryptocurrencyApi.Application.csproj", "CryptocurrencyApi.Application/"]
+COPY ["CryptocurrencyApi.Domain/CryptocurrencyApi.Domain.csproj", "CryptocurrencyApi.Domain/"]
+COPY ["CryptocurrencyApi.Infrastructure/CryptocurrencyApi.Infrastructure.csproj", "CryptocurrencyApi.Infrastructure/"]
+RUN dotnet restore "CryptocurrencyApi.Api/CryptocurrencyApi.Api.csproj"
 COPY . .
-WORKDIR "/src/CryptocurrencyApi.API"
-RUN dotnet build "CryptocurrencyApi.API.csproj" -c Release -o /app/build
+WORKDIR "/src/CryptocurrencyApi.Api"
+RUN dotnet build "CryptocurrencyApi.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "CryptocurrencyApi.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "CryptocurrencyApi.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "CryptocurrencyApi.API.dll"]
+ENTRYPOINT ["dotnet", "CryptocurrencyApi.Api.dll"]
