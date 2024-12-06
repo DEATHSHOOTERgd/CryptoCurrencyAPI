@@ -34,8 +34,7 @@ namespace CryptocurrencyApi.Application.Services.Cryptocurrencies
         throw new ClientFaultException("Ya existe una criptomoneda con este nombre.");
       }
 
-      var cryptocurrency = await _cryptocurrencyRepository.CreateCryptocurrency(new Cryptocurrency { 
-        Id=cryptocurrencyRequest.Id,
+      var cryptocurrency = await _cryptocurrencyRepository.CreateCryptocurrency(new Cryptocurrency {
         Code = cryptocurrencyRequest.Code,
         Symbol=cryptocurrencyRequest.Symbol,
         Name=cryptocurrencyRequest.Name,
