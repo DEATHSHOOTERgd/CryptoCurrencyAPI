@@ -11,6 +11,7 @@ using CryptocurrencyApi.Infrastructure.Seeders;
 using CryptocurrencyApi.Infrastructure.Utils;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
 
@@ -31,6 +32,17 @@ builder.Services.AddScoped<ICoinRepository, CoinRepository>();
 builder.Services.AddScoped<ICryptocurrencyRepository, CryptocurrencyRepository>();
 
 builder.Services.AddScoped<ICryptocurrencyService, CryptocurrencyService>();
+
+var allowedOrigins = builder.Configuration.GetSection("AllowedHosts").Get<string[]>();
+
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("_AppPolicy",
+      builder => builder.WithOrigins(allowedOrigins)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
+
 
 var app = builder.Build();
 
@@ -86,6 +98,8 @@ app.UseExceptionHandler(appError =>
 });
 
 app.UseHttpsRedirection();
+
+app.UseCors("_AppPolicy");
 
 app.UseAuthorization();
 
