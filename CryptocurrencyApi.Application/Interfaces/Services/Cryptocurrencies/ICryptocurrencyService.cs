@@ -11,9 +11,9 @@ namespace CryptocurrencyApi.Application.Interfaces.Services.Cryptocurrencies
   public interface ICryptocurrencyService
   {
         public Task<List<CryptocurrencyDTO>> ListCryptocurrencies(int limit, int offset, string filter);
-        public Task<CryptocurrencyDTO> GetCryptocurrencyById(string id);
-        public Task<CryptocurrencyDTO> CreateCryptocurrency(CryptocurrencyRequest cryptocurrencyRequest);
-        public Task<CryptocurrencyDTO> UpdateCryptocurrency(CryptocurrencyRequest cryptocurrencyRequest);
-        public Task DeleteCryptocurrency(string id);
+        public Task<CryptocurrencyDTO> GetCryptocurrencyById(int id);
+        public Task<CryptocurrencyDTO> CreateCryptocurrency(CreateCryptocurrencyRequest cryptocurrencyRequest);
+        public Task<CryptocurrencyDTO> UpdateCryptocurrency(UpdateCryptocurrencyRequest cryptocurrencyRequest);
+        public Task DeleteCryptocurrency(int id);
     }
 }

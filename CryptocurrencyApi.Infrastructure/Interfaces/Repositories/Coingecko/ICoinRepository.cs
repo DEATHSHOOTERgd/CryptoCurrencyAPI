@@ -1,5 +1,4 @@
 ﻿using CryptocurrencyApi.Domain.Models.DTO.Coingecko;
-using CryptocurrencyApi.Domain.Models.Responses.Coingecko;
 using System;
 using System.Collections.Generic;
 using System.Linq;

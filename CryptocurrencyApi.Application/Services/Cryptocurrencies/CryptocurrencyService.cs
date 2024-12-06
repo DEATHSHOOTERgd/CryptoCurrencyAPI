@@ -22,20 +22,21 @@ namespace CryptocurrencyApi.Application.Services.Cryptocurrencies
     {
       _cryptocurrencyRepository = cryptocurrencyRepository;
     }
-    public async Task<CryptocurrencyDTO> CreateCryptocurrency(CryptocurrencyRequest cryptocurrencyRequest)
+    public async Task<CryptocurrencyDTO> CreateCryptocurrency(CreateCryptocurrencyRequest cryptocurrencyRequest)
     {
-      var cryptocurrencyId = await _cryptocurrencyRepository.GetCryptocurrencyById(cryptocurrencyRequest.Id);
-      if (cryptocurrencyId != null) {
+      var cryptocurrencyCode = await _cryptocurrencyRepository.GetCryptocurrencyByCode(cryptocurrencyRequest.Code);
+      if (cryptocurrencyCode != null && cryptocurrencyCode.Status) {
         throw new ClientFaultException("Ya existe una criptomoneda con este código.");
       }
 
       var cryptocurrencyName = await _cryptocurrencyRepository.GetCryptocurrencyByName(cryptocurrencyRequest.Name);
-      if (cryptocurrencyName != null) {
+      if (cryptocurrencyName != null && cryptocurrencyName.Status) {
         throw new ClientFaultException("Ya existe una criptomoneda con este nombre.");
       }
 
       var cryptocurrency = await _cryptocurrencyRepository.CreateCryptocurrency(new Cryptocurrency { 
         Id=cryptocurrencyRequest.Id,
+        Code = cryptocurrencyRequest.Code,
         Symbol=cryptocurrencyRequest.Symbol,
         Name=cryptocurrencyRequest.Name,
         Description=cryptocurrencyRequest.Description,
@@ -44,6 +45,7 @@ namespace CryptocurrencyApi.Application.Services.Cryptocurrencies
 
       return new CryptocurrencyDTO {
         Id=cryptocurrency.Id,
+        Code=cryptocurrency.Code,
         Symbol=cryptocurrency.Symbol,
         Name=cryptocurrency.Name,
         Description = cryptocurrency.Description,
@@ -51,7 +53,7 @@ namespace CryptocurrencyApi.Application.Services.Cryptocurrencies
       };
     }
 
-    public async Task DeleteCryptocurrency(string id)
+    public async Task DeleteCryptocurrency(int id)
     {
       var cryptocurrencyId = await _cryptocurrencyRepository.GetCryptocurrencyById(id);
       if (cryptocurrencyId == null) {
@@ -61,11 +63,12 @@ namespace CryptocurrencyApi.Application.Services.Cryptocurrencies
       await _cryptocurrencyRepository.DeleteCryptocurrency(id);
     }
 
-    public async Task<CryptocurrencyDTO> GetCryptocurrencyById(string id)
+    public async Task<CryptocurrencyDTO> GetCryptocurrencyById(int id)
     {
       var currency = await _cryptocurrencyRepository.GetCryptocurrencyById(id);
       return new CryptocurrencyDTO {
         Id = currency.Id,
+        Code = currency.Code,
         Symbol = currency.Symbol,
         Name = currency.Name,
         Description = currency.Description,
@@ -78,6 +81,7 @@ namespace CryptocurrencyApi.Application.Services.Cryptocurrencies
       return (await _cryptocurrencyRepository.ListCryptocurrencies(limit, offset, filter)).Select(currency => new CryptocurrencyDTO
       {
         Id = currency.Id,
+        Code = currency.Code,
         Symbol = currency.Symbol,
         Name = currency.Name,
         Description = currency.Description,
@@ -85,7 +89,7 @@ namespace CryptocurrencyApi.Application.Services.Cryptocurrencies
       }).ToList();
     }
 
-    public async Task<CryptocurrencyDTO> UpdateCryptocurrency(CryptocurrencyRequest cryptocurrencyRequest)
+    public async Task<CryptocurrencyDTO> UpdateCryptocurrency(UpdateCryptocurrencyRequest cryptocurrencyRequest)
     {
       var cryptocurrencyId = await _cryptocurrencyRepository.GetCryptocurrencyById(cryptocurrencyRequest.Id);
       if (cryptocurrencyId == null) {
@@ -93,11 +97,12 @@ namespace CryptocurrencyApi.Application.Services.Cryptocurrencies
       }
 
       var cryptocurrencyName = await _cryptocurrencyRepository.GetCryptocurrencyByName(cryptocurrencyRequest.Name);
-      if (cryptocurrencyName != null && cryptocurrencyName.Id!=cryptocurrencyName.Id) {
+      if (cryptocurrencyName != null && cryptocurrencyName.Id!=cryptocurrencyName.Id && cryptocurrencyName.Status) {
         throw new ClientFaultException("Ya existe una criptomoneda con este nombre.");
       }
 
       var cryptocurrency = await _cryptocurrencyRepository.UpdateCryptocurrency(new Cryptocurrency {
+        Id = cryptocurrencyRequest.Id,
         Symbol = cryptocurrencyRequest.Symbol,
         Name = cryptocurrencyRequest.Name,
         Description = cryptocurrencyRequest.Description,
@@ -106,6 +111,7 @@ namespace CryptocurrencyApi.Application.Services.Cryptocurrencies
 
       return new CryptocurrencyDTO {
         Id = cryptocurrency.Id,
+        Code = cryptocurrency.Code,
         Symbol = cryptocurrency.Symbol,
         Name = cryptocurrency.Name,
         Description = cryptocurrency.Description,

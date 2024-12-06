@@ -1,5 +1,4 @@
 ﻿using CryptocurrencyApi.Domain.Models.DTO.Coingecko;
-using CryptocurrencyApi.Domain.Models.Responses.Coingecko;
 using CryptocurrencyApi.Infrastructure.Interfaces.Repositories.Coingecko;
 using CryptocurrencyApi.Infrastructure.Utils;
 using Microsoft.Extensions.Configuration;

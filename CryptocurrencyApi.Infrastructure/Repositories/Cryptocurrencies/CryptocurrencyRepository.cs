@@ -18,19 +18,25 @@ namespace CryptocurrencyApi.Infrastructure.Repositories.Cryptocurrencies
     }
     public async Task<Cryptocurrency> CreateCryptocurrency(Cryptocurrency cryptocurrency)
     {
+      var newId = _dataContext.Cryptocurrencies.MaxBy(currency=>currency.Id)?.Id;
+      cryptocurrency.Id = (newId == null?0:newId.Value) + 1;
       _dataContext.Cryptocurrencies.Add(cryptocurrency);
       return cryptocurrency;
     }
 
-    public async Task DeleteCryptocurrency(string id)
+    public async Task DeleteCryptocurrency(int id)
     {
       int index = _dataContext.Cryptocurrencies.FindIndex(currency => currency.Id == id);
       _dataContext.Cryptocurrencies[index].Status = false;
     }
 
-    public async Task<Cryptocurrency> GetCryptocurrencyById(string id)
+    public async Task<Cryptocurrency> GetCryptocurrencyById(int id)
     {
       return _dataContext.Cryptocurrencies.FirstOrDefault(currency=>currency.Id == id);
+    }
+
+    public async Task<Cryptocurrency> GetCryptocurrencyByCode(string code) {
+      return _dataContext.Cryptocurrencies.FirstOrDefault(currency => currency.Code == code);
     }
 
     public async Task<Cryptocurrency> GetCryptocurrencyByName(string name) {
@@ -45,7 +51,7 @@ namespace CryptocurrencyApi.Infrastructure.Repositories.Cryptocurrencies
     public async Task<Cryptocurrency> UpdateCryptocurrency(Cryptocurrency cryptocurrencyRequest)
     {
       int index = _dataContext.Cryptocurrencies.FindIndex(currency => currency.Id == cryptocurrencyRequest.Id);
-      if (index == 0) {
+      if (index == -1) {
         return null;
       }
       _dataContext.Cryptocurrencies[index].Name = cryptocurrencyRequest.Name;

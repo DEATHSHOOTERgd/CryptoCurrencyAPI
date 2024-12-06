@@ -19,7 +19,7 @@ namespace CryptocurrencyApi.Infrastructure.Seeders
       foreach ( var coin in coinList ) {
         await cryptocurrencyRepository.CreateCryptocurrency(new Cryptocurrency
         {
-          Id = coin.Id,
+          Code = coin.Id,
           Symbol = coin.Symbol,
           Name = coin.Name,
           Description = null,
