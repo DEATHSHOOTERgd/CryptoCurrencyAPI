@@ -17,7 +17,7 @@ namespace CryptocurrencyApi.Api.Controllers.v1.Cryptocurrency {
     [HttpGet()]
     public async Task<ActionResult<SuccessResponse<List<CryptocurrencyDTO>>>> ListCryptocurrencies(int? limit=20,int? offset=0, string? filter="")
     {
-      var response = await _CryptocurrencyService.ListCryptocurrencies(limit.Value, offset.Value, filter);
+      var response = await _CryptocurrencyService.ListCryptocurrencies(limit.Value, offset.Value, filter==null?"":filter);
 
       return Ok(new SuccessResponse<List<CryptocurrencyDTO>>(200, "Consulta exitosa", response));
     }
